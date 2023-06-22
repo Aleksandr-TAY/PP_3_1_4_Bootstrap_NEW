@@ -12,7 +12,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import javax.validation.Valid;
 
 
-@Controller
+@RestController
 public class UsersController {
 	private final UserService userService;
 	@Autowired
@@ -25,7 +25,7 @@ public class UsersController {
 		return "users";
 	}
 	@GetMapping("/{id}")
-	public String showOneUser(@PathVariable("id") int id1, ModelMap model) {
+	public String showOneUser(@PathVariable("id") long id1, ModelMap model) {
 		model.addAttribute("user", userService.getUser(id1));
 		return "oneUser";
 	}
@@ -45,13 +45,13 @@ public class UsersController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String edit(ModelMap model, @PathVariable("id") int id) {
+	public String edit(ModelMap model, @PathVariable("id") long id) {
 		model.addAttribute("user", userService.getUser(id));
 		return "edit";
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@Valid @ModelAttribute("user")  User user, BindingResult bindingResult, @PathVariable("id") int id) {
+	public String update(@Valid @ModelAttribute("user")  User user, BindingResult bindingResult, @PathVariable("id") long id) {
 		if (bindingResult.hasErrors())
 			return "/edit";
 
@@ -60,7 +60,7 @@ public class UsersController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable("id") long id) {
 		userService.removeUserById(id);
 		return "redirect:/";
 	}
