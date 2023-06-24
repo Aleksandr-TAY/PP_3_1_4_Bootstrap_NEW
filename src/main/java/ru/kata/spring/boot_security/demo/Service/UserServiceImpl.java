@@ -22,33 +22,21 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
-    @Autowired
-    //@Qualifier("UserDao")
+
     private final UserDao userDao;
-    private UserRepository userRepository;
+    private  UserRepository userRepository;
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
+    public UserServiceImpl(UserDao userDao, UserRepository userRepository) {
+        this.userDao = userDao;
         this.userRepository = userRepository;
     }
-
-    public User findByName(String name) {
-        return userRepository.findByName(name);
-    }
-
-    @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
     @Override
-
     public void addUser(User user) {
         userDao.addUser(user);
     }
 
     @Override
-
     public void removeUserById(long id) {
         userDao.removeUserById(id);
     }
@@ -70,9 +58,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDao.updateUser(id, user);
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByName(username);
+        User user = findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("User '%s' not found", username));
         }

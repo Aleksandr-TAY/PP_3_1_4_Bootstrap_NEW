@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @Min(value = 0, message = "Age must be greater than zero")
     private int age;
 
-    @Size(min = 2, max = 30, message = "password should be between 2 and 30 charters")
+    @Size(min = 2, message = "password should be between 2 and 30 charters")
     @Column(name = "password")
     private String password;
 
@@ -48,11 +48,12 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(long id, String username, String surname, int age) {
-        this.id = id;
+    public User(String username, String surname, int age, String password, Set<Role> roles) {
         this.username = username;
         this.surname = surname;
         this.age = age;
+        this.password = password;
+        this.roles = roles;
     }
 
     public long getId() {

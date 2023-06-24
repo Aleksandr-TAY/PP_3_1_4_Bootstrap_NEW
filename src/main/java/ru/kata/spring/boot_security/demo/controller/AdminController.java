@@ -12,56 +12,66 @@ import ru.kata.spring.boot_security.demo.models.User;
 import javax.validation.Valid;
 
 
-@RestController
-public class UsersController {
+@Controller
+public class AdminController {
 	private final UserService userService;
+
 	@Autowired
-	public UsersController(UserService userService) {
+	public AdminController(UserService userService) {
 		this.userService = userService;
 	}
+
 	@GetMapping(value = "/")
+	public String startPage() {
+		return "index";
+	}
+//	@GetMapping(value = "/login")
+//	public String login() {
+//		return "users";
+//	}
+	@GetMapping(value = "/admin")
 	public String showAllUsers(ModelMap model) {
 		model.addAttribute("users", userService.getAllUsers());
 		return "users";
 	}
-	@GetMapping("/{id}")
+	@GetMapping("/user/{id}")
 	public String showOneUser(@PathVariable("id") long id1, ModelMap model) {
 		model.addAttribute("user", userService.getUser(id1));
 		return "oneUser";
 	}
 
-	@GetMapping("/new")
+	@GetMapping("/admin/new")
 	public String newUser(@ModelAttribute("user") User user) {
 		return "new";
 	}
 
-	@PostMapping("/")
+	@PostMapping("/admin")
 	public String create(@Valid @ModelAttribute("user")  User user, BindingResult bindingResult) {
 		if (bindingResult.hasErrors())
 			return "/new";
 
 			userService.addUser(user);
-			return "redirect:/";
+			return "redirect:/admin";
 	}
 
-	@GetMapping("/{id}/edit")
+	@GetMapping("/admin/{id}/edit")
 	public String edit(ModelMap model, @PathVariable("id") long id) {
 		model.addAttribute("user", userService.getUser(id));
 		return "edit";
 	}
 
-	@PatchMapping("/{id}")
+	@PatchMapping("/admin/{id}")
 	public String update(@Valid @ModelAttribute("user")  User user, BindingResult bindingResult, @PathVariable("id") long id) {
 		if (bindingResult.hasErrors())
 			return "/edit";
 
 		userService.updateUser(id, user);
-		return "redirect:/";
+		return "redirect:/admin";
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/admin/{id}")
 	public String delete(@PathVariable("id") long id) {
 		userService.removeUserById(id);
-		return "redirect:/";
+		return "redirect:/admin";
 	}
 }
