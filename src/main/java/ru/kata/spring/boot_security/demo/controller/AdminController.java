@@ -13,6 +13,7 @@ import javax.validation.Valid;
 
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
 	private final UserService userService;
 
@@ -21,15 +22,15 @@ public class AdminController {
 		this.userService = userService;
 	}
 
-	@GetMapping(value = "/")
-	public String startPage() {
-		return "index";
-	}
+//	@GetMapping(value = "/")
+//	public String startPage() {
+//		return "index";
+//	}
 //	@GetMapping(value = "/login")
 //	public String login() {
 //		return "users";
 //	}
-	@GetMapping(value = "/admin")
+	@GetMapping(value = "/")
 	public String showAllUsers(ModelMap model) {
 		model.addAttribute("users", userService.getAllUsers());
 		return "users";
@@ -37,41 +38,41 @@ public class AdminController {
 	@GetMapping("/user/{id}")
 	public String showOneUser(@PathVariable("id") long id1, ModelMap model) {
 		model.addAttribute("user", userService.getUser(id1));
-		return "oneUser";
+		return "user";
 	}
 
-	@GetMapping("/admin/new")
+	@GetMapping("/new")
 	public String newUser(@ModelAttribute("user") User user) {
 		return "new";
 	}
 
-	@PostMapping("/admin")
+	@PostMapping("/")
 	public String create(@Valid @ModelAttribute("user")  User user, BindingResult bindingResult) {
 		if (bindingResult.hasErrors())
 			return "/new";
 
 			userService.addUser(user);
-			return "redirect:/admin";
+			return "redirect:/";
 	}
 
-	@GetMapping("/admin/{id}/edit")
+	@GetMapping("/{id}/edit")
 	public String edit(ModelMap model, @PathVariable("id") long id) {
 		model.addAttribute("user", userService.getUser(id));
 		return "edit";
 	}
 
-	@PatchMapping("/admin/{id}")
+	@PatchMapping("/{id}")
 	public String update(@Valid @ModelAttribute("user")  User user, BindingResult bindingResult, @PathVariable("id") long id) {
 		if (bindingResult.hasErrors())
 			return "/edit";
 
 		userService.updateUser(id, user);
-		return "redirect:/admin";
+		return "redirect:/";
 	}
 
-	@DeleteMapping("/admin/{id}")
+	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") long id) {
 		userService.removeUserById(id);
-		return "redirect:/admin";
+		return "redirect:/";
 	}
 }
