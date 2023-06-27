@@ -4,10 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
@@ -17,26 +13,14 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private long id;
 
-    @Column(name = "username")
-    @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 charters")
-    @Pattern(regexp = "[A-zА-я]+", message = "The name must contain only uppercase and lowercase letters")
     private String username;
 
-    @Column(name = "surname")
-    @Size(max = 30, message = "Name should not be more 30 charters")
-    @Pattern(regexp = "[A-zА-я]+", message = "The name must contain only uppercase and lowercase letters")
     private String surname;
 
-    @Column(name = "age")
-    @Min(value = 0, message = "Age must be greater than zero")
     private int age;
 
-    @Size(min = 2, message = "password should be between 2 and 30 charters")
-    @Column(name = "password")
     private String password;
 
     @Transient
