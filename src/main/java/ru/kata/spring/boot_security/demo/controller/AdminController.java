@@ -10,6 +10,8 @@ import ru.kata.spring.boot_security.demo.Service.UserService;
 import ru.kata.spring.boot_security.demo.models.User;
 
 import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
 
 
 @Controller
@@ -24,29 +26,22 @@ public class AdminController {
 
     //Показать всех пользователей
     @GetMapping
-    public String showAllUsers(ModelMap model) {
+    public String showAllUsers(@ModelAttribute("user") User user, ModelMap model, Principal principal) {
         model.addAttribute("users", userService.getAllUsers());
+        User authUser = userService.findByUsername(principal.getName());
+        model.addAttribute("user", authUser);
+        List<User> allUsersList = userService.getAllUsers();
+        model.addAttribute("allUsersList", allUsersList);
         return "users";
     }
+   //создаем пользователя
+//    @GetMapping("/new")
+//    public String newUser(@ModelAttribute("user") User user) {
+//        return "new";
+//    }
 
-    //Показать одного пользователя
-    @GetMapping("/{id}")
-    public String showOneUser(@PathVariable("id") long id1, ModelMap model) {
-        model.addAttribute("user", userService.getUser(id1));
-        return "user";
-    }
-
-    //создаем пользователя
-    @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "new";
-    }
-
-    @PostMapping()
-    public String create(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return "/new";
-
+    @PostMapping("/")
+    public String create(@ModelAttribute("user") User user) {
         userService.addUser(user);
         return "redirect:/admin";
     }
@@ -67,10 +62,16 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    //Удаляем пользователя
+    //Удаляем пользователяч
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") long id) {
         userService.removeUserById(id);
         return "redirect:/admin";
+    }
+    //Показать одного пользователя
+    @GetMapping("/{id}")
+    public String showOneUser(@PathVariable("id") long id1, ModelMap model) {
+        model.addAttribute("user", userService.getUser(id1));
+        return "user";
     }
 }
